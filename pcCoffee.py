@@ -1,7 +1,8 @@
 import pyautogui
 import tkinter as tk
-import time
 import sys
+import threading
+import time
 
 # Define the list of positions to cycle through (adjust as needed)
 positions = [
@@ -43,6 +44,11 @@ def set_shutdown_time():
         shutdown_time_seconds = int(shutdown_time_minutes) * 60
         shutdown_countdown(shutdown_time_seconds)
 
+def run_mouse_and_key():
+    while True:
+        move_mouse_and_press_key()
+        time.sleep(30)  # Wait for 30 seconds before moving the mouse and pressing the key again
+
 root = tk.Tk()
 root.title("Set Shutdown Time")
 
@@ -55,8 +61,9 @@ entry.pack()
 button = tk.Button(root, text="Set Shutdown", command=set_shutdown_time)
 button.pack()
 
-root.mainloop()
+# Start the mouse and key function in a separate thread
+mouse_thread = threading.Thread(target=run_mouse_and_key)
+mouse_thread.daemon = True
+mouse_thread.start()
 
-while True:
-    move_mouse_and_press_key()
-    time.sleep(30)  # Wait for 30 seconds before moving the mouse and pressing the key again
+root.mainloop()
