@@ -1,6 +1,6 @@
 import pyautogui
-import time
 import tkinter as tk
+import time
 import sys
 
 # Define the list of positions to cycle through (adjust as needed)
@@ -27,12 +27,21 @@ def move_mouse_and_press_key():
     # Update the current position index
     current_position_index = (current_position_index + 1) % len(positions)
 
+def shutdown_countdown(shutdown_time_seconds):
+    remaining_time = shutdown_time_seconds
+    while remaining_time > 0:
+        label.config(text=f"Shutting down in {remaining_time // 60} minutes and {remaining_time % 60} seconds")
+        remaining_time -= 1
+        root.update()
+        time.sleep(1)
+    root.destroy()
+    sys.exit()
+
 def set_shutdown_time():
     shutdown_time_minutes = entry.get()
     if shutdown_time_minutes:
         shutdown_time_seconds = int(shutdown_time_minutes) * 60
-        root.after(shutdown_time_seconds * 1000, root.destroy)
-        root.after(shutdown_time_seconds * 1000, sys.exit)  # Shut down the entire app
+        shutdown_countdown(shutdown_time_seconds)
 
 root = tk.Tk()
 root.title("Set Shutdown Time")
@@ -51,4 +60,3 @@ root.mainloop()
 while True:
     move_mouse_and_press_key()
     time.sleep(30)  # Wait for 30 seconds before moving the mouse and pressing the key again
-
